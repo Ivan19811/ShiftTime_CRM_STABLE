@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzKk-mmPDfC-XqAsWRp7sjW8bTTncntJxwCj5ZsZ_wfYswQlQPP_NWsuZzstcnmXcYSww/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzwfe3PN4FaAURdUc38eMYagmqySJ8SFAwW4x6MudNO8u_kk-5LZIjI2abBg4wgiqoi7g/exec";
           
 // Статус кореневого роуту (для перевірки)
 app.get("/", (req, res) => {
