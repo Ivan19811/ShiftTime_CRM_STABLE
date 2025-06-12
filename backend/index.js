@@ -1,46 +1,56 @@
-const express = require("express");
-const cors = require("cors");
-const fetch = require("node-fetch");
+import express from "express";
+import cors from "cors";
+import fetch from "node-fetch";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzwfe3PN4FaAURdUc38eMYagmqySJ8SFAwW4x6MudNO8u_kk-5LZIjI2abBg4wgiqoi7g/exec";
-          
-// Статус кореневого роуту (для перевірки)
-app.get("/", (req, res) => {
-  res.send("✅ ShiftTime Backend працює");
-});
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxYeM7U1OsjhBBQHa6vvc3oz5iFRLxzgnjbToj013lX11qoYlWb71ewypY84ecC3hZ7/exec";
 
-// POST: запис у Google Таблицю
-app.post("/write", async (req, res) => {
+app.post("/send", async (req, res) => {
   try {
-    const response = await fetch(SCRIPT_URL, {
+    const response = await fetch(GAS_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req.body)
     });
-    const data = await response.json();
-    res.json(data);
+
+    const text = await response.text();
+    console.log("📦 Відповідь від GAS:", text);
+    res.json(JSON.parse(text));
   } catch (err) {
-    res.status(500).json({ error: "❌ Помилка запису: " + err.message });
+    console.error("❌ ПОМИЛКА на сервері:", err.message);
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
-// GET: отримання останнього значення
-app.get("/last", async (req, res) => {
+app.post("/writeNumber", async (req, res) => {
   try {
-    const response = await fetch(SCRIPT_URL);
-    const data = await response.json();
-    res.json(data);
+    const payload = {
+      surname: "",
+      name: "",
+      patronymic: "",
+      number: req.body.value || 0
+    };
+
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await response.text();
+    console.log("📦 Відповідь (writeNumber):", text);
+    res.json(JSON.parse(text));
   } catch (err) {
-    res.status(500).json({ error: "❌ Помилка отримання: " + err.message });
+    console.error("❌ ПОМИЛКА /writeNumber:", err.message);
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 
-const PORT = process.env.PORT || 10000;
+// ✅ Використання PORT з Render
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Backend listening on port ${PORT}`);
+  console.log(`✅ Proxy-сервер запущено на порту ${PORT}`);
 });
-
