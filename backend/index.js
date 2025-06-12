@@ -3,11 +3,21 @@ import cors from "cors";
 import fetch from "node-fetch";
 
 const app = express();
-app.use(cors());
+
+// ✅ Правильна CORS-конфігурація для Netlify-домену
+const corsOptions = {
+  origin: "https://shiftime-crm-stable.netlify.app",
+  methods: "GET,POST",
+  allowedHeaders: ["Content-Type"]
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
+// 🔗 URL до Google Apps Script
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxYeM7U1OsjhBBQHa6vvc3oz5iFRLxzgnjbToj013lX11qoYlWb71ewypY84ecC3hZ7/exec";
 
+// 📤 Обробка повної форми
 app.post("/send", async (req, res) => {
   try {
     const response = await fetch(GAS_URL, {
@@ -25,6 +35,7 @@ app.post("/send", async (req, res) => {
   }
 });
 
+// 🟡 Альтернативний маршрут — лише для числа
 app.post("/writeNumber", async (req, res) => {
   try {
     const payload = {
@@ -49,7 +60,7 @@ app.post("/writeNumber", async (req, res) => {
   }
 });
 
-// ✅ Використання PORT з Render
+// ✅ Запуск сервера
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Proxy-сервер запущено на порту ${PORT}`);
