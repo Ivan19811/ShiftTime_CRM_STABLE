@@ -15,7 +15,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // 🔗 URL до Google Apps Script
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxYeM7U1OsjhBBQHa6vvc3oz5iFRLxzgnjbToj013lX11qoYlWb71ewypY84ecC3hZ7/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzwfe3PN4FaAURdUc38eMYagmqySJ8SFAwW4x6MudNO8u_kk-5LZIjI2abBg4wgiqoi7g/exec";
 
 // 📤 Обробка повної форми
 app.post("/send", async (req, res) => {
